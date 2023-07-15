@@ -4,22 +4,25 @@
 <head>
     <title>Drag and Drop Task Management</title>
     <style>
-        .add{
-            padding:10px;
-           
+        .add {
+            padding: 10px;
+
         }
-        h1{
-            color:white;
+
+        h1 {
+            color: white;
         }
+
         .card {
             width: 200px;
             min-height: 50px;
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #aaaaaa;
-            
+
         }
-        body{
+
+        body {
             background: linear-gradient(97.78deg, var(--ds-background-accent-purple-bolder, #4423a3) 17.5%, var(--ds-background-accent-magenta-subtle, #aa63cb) 113.39%);
 
         }
@@ -29,17 +32,20 @@
             min-height: 400px;
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #aaaaaa;
-            background-color: rgb(224, 172, 172);
-            margin:5px;
+            border: 1px solid #0f0b0b;
+            background-color: rgb(221, 164, 234);
+            margin: 5px;
             border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+
         }
 
         .container {
             display: flex;
             flex-direction: row;
-            
+
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -51,7 +57,7 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
         }
-    
+
 
         .modal-content {
             background-color: #fefefe;
@@ -60,106 +66,156 @@
             width: 60%;
         }
     </style>
-    <script>
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
-
-        function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        }
-
-        function drop(ev) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            ev.target.appendChild(document.getElementById(data));
-        }
-
-        function addTask() {
-            var taskInput = document.getElementById("task-input");
-            var task = taskInput.value;
-            if (task.trim() !== "") {
-                var newTaskElement = document.createElement("div");
-                newTaskElement.draggable = true;
-                newTaskElement.id = "task-" + Math.floor(Math.random() * 1000);
-                newTaskElement.textContent = "Task Name: " + task;
-                newTaskElement.className = "card";
-                newTaskElement.addEventListener("dragstart", function (event) {
-                    event.dataTransfer.setData("text", event.target.id);
-                });
-
-                newTaskElement.addEventListener("click", function (event) {
-                    showModal(event.target.id);
-                });
-
-                document.getElementById("open-column").appendChild(newTaskElement);
-                taskInput.value = "";
-            }
-        }
-
-
-        function showModal(taskId) {
-            var modal = document.createElement("div");
-            modal.className = "modal";
-            modal.innerHTML = `
-        <div class="modal-content">
-          <h3>Task Description</h3>
-          <textarea id="description-input" rows="4" cols="30"></textarea>
-          <br>
-          <button onclick="saveDescription('${taskId}')">Save</button>
-        </div>
-      `;
-
-            document.body.appendChild(modal);
-
-            modal.style.display = "block";
-        }
-
-        function saveDescription(taskId) {
-            var descriptionInput = document.getElementById("description-input");
-            var description = descriptionInput.value;
-
-            var taskElement = document.getElementById(taskId);
-            taskElement.dataset.description = description;
-            // append description to task element
-            var descriptionElement = document.createElement("p");
-            descriptionElement.textContent = "Description: " + description;
-            taskElement.appendChild(descriptionElement);
-
-
-            closeModal();
-        }
-
-        function closeModal() {
-            var modal = document.querySelector(".modal");
-            modal.parentNode.removeChild(modal);
-        }
-
-    </script>
+    <!--Add Bootstrap CDN Link-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add Bootstrap JS CDN Link-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-
-    <h1>Task Management</h1>
+    <div class="jumbotron">
+        <h1 class="display-4" style="color: black;">Task Management</h1>
+        <p class="lead">Add you tasks and manage your productivity.</p>
+    </div>
+    <!-- <h1>Task Management</h1> -->
     <div class="container">
         <div class="column" id="open-column" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Open</h2>
+            <hr>
             <div class="add">
-                <input type="text" id="task-input" placeholder=" Create a task">
-                <button onclick="addTask()">+</button>
+                <input type="text" id="task-input" placeholder=" Create a task" style="display: none;">
+                <button class="btn btn-primary" onclick="addTask(); toggleTaskInput();"> <i
+                        class="fa-solid fa-square-plus fa-xl"></i> Add Task
+                </button>
             </div>
         </div>
         <div class="column" id="inprogress-column" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>In Progress</h2>
+            <hr>
         </div>
         <div class="column" id="inreview-column" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>In Review</h2>
+            <hr>
         </div>
         <div class="column" id="done-column" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Done</h2>
+            <hr>
         </div>
     </div>
-    
+
 </body>
+
+<script src="https://kit.fontawesome.com/c96b8c687d.js" crossorigin="anonymous"></script>
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    // function drop(ev) {
+    //     ev.preventDefault();
+    //     var data = ev.dataTransfer.getData("text");
+    //     ev.target.appendChild(document.getElementById(data));
+    // }
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var dropTarget = ev.target;
+
+        // Check if the drop target class starts with "card"
+        if (!dropTarget.classList.value.startsWith("card") && dropTarget.parentNode.classList.value.startsWith("description")) {
+            dropTarget.appendChild(document.getElementById(data));
+        }
+    }
+    function addTask() {
+        var taskInput = document.getElementById("task-input");
+        var task = taskInput.value;
+        if (task.trim() !== "") {
+            var newTaskElement = document.createElement("div");
+            newTaskElement.draggable = true;
+            newTaskElement.id = "task-" + Math.floor(Math.random() * 1000);
+            newTaskElement.textContent = "Task Name: " + task;
+            newTaskElement.className = "card";
+            newTaskElement.addEventListener("dragstart", function (event) {
+                event.dataTransfer.setData("text", event.target.id);
+            });
+
+            newTaskElement.addEventListener("click", function (event) {
+                showModal(event.target.id);
+            });
+
+            document.getElementById("open-column").appendChild(newTaskElement);
+            taskInput.value = "";
+        }
+    }
+
+
+    function showModal(taskId) {
+        var taskElement = document.getElementById(taskId);
+        var existingDescriptionElement = taskElement.querySelector(".description");
+
+        if (existingDescriptionElement) {
+            // Description already exists, no need to create a new modal
+            existingDescriptionElement.focus();
+            return;
+        }
+
+        var modal = document.createElement("div");
+        modal.className = "modal";
+        modal.innerHTML = `
+    <div class="modal-content" style="width: 50%;">
+      <h3>Task Description</h3>
+      <textarea id="description-input" rows="4" cols="30" placeholder="Add your description here."></textarea>
+      <br>
+        <div class="modal-footer">
+      <button class="btn btn-secondary"onclick="closeModal();" >Cancel</button>
+      <button class="btn btn-primary"onclick="saveDescription('${taskId}')" ">Save</button>
+      </div>
+    </div>
+  `;
+
+        document.body.appendChild(modal);
+
+        modal.style.display = "block";
+    }
+
+    function saveDescription(taskId) {
+        var descriptionInput = document.getElementById("description-input");
+        var description = descriptionInput.value;
+
+        var taskElement = document.getElementById(taskId);
+        taskElement.dataset.description = description;
+
+        var existingDescriptionElement = taskElement.querySelector(".description");
+        if (existingDescriptionElement) {
+            existingDescriptionElement.textContent = "Description: " + description;
+        } else {
+            var descriptionElement = document.createElement("p");
+            descriptionElement.className = "description";
+            descriptionElement.textContent = "Description: " + description;
+            taskElement.appendChild(descriptionElement);
+        }
+
+        closeModal();
+    }
+
+    function closeModal() {
+        var modal = document.querySelector(".modal");
+        modal.parentNode.removeChild(modal);
+    }
+
+
+    function toggleTaskInput() {
+        var taskInput = document.getElementById("task-input");
+        if (taskInput.style.display === "none") {
+            taskInput.style.display = "block";
+        } else {
+            taskInput.style.display = "none";
+        }
+    }
+</script>
 
 </html>
