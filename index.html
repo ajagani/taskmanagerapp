@@ -126,7 +126,7 @@
         var dropTarget = ev.target;
 
         // Check if the drop target class starts with "card"
-        if (!dropTarget.classList.value.startsWith("card") && dropTarget.parentNode.classList.value.startsWith("description")) {
+        if (!dropTarget.classList.value.startsWith("card") && !dropTarget.parentNode.classList.value.startsWith("description")) {
             dropTarget.appendChild(document.getElementById(data));
         }
     }
